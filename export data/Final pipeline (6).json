@@ -1,0 +1,961 @@
+{
+	"jobConfig": {
+		"name": "Final pipeline",
+		"description": "",
+		"role": "arn:aws:iam::405420361577:role/GlueS3ToAuroraRole",
+		"command": "glueetl",
+		"version": "5.0",
+		"currentGlueVersion": "",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "Final pipeline.py",
+		"scriptLocation": "s3://aws-glue-assets-405420361577-ap-south-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [
+			{
+				"key": "--conf",
+				"value": "--conf spark.sql.catalog.glue_catalog=org.apache.iceberg.spark.SparkCatalog --conf spark.sql.catalog.glue_catalog.warehouse=s3://tatapowertorque2026/iceberg/ --conf spark.eventLog.rolling.enabled=true",
+				"existing": false
+			}
+		],
+		"tags": [
+			{
+				"key": "aws-apn-id",
+				"value": "pc:6ny2gfulkc4it0tw7dg03tqx6",
+				"existing": false
+			},
+			{
+				"key": "map-migrated",
+				"value": "migLL638THD7R",
+				"existing": false
+			}
+		],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2026-05-06T04:17:46.863Z",
+		"developerMode": false,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-405420361577-ap-south-1/temporary/",
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-enable",
+		"sparkPath": "s3://aws-glue-assets-405420361577-ap-south-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null,
+		"pythonPath": "",
+		"dependentPath": "",
+		"additionalPythonModules": ""
+	},
+	"dag": {
+		"node-1776836389046": {
+			"nodeId": "node-1776836389046",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1776836352324"
+			],
+			"name": "Change Schema--datatype change",
+			"generatedNodeName": "ChangeSchemadatatypechange_node1776836389046",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "log_st",
+					"fromPath": [
+						"status"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "latitude_id",
+					"fromPath": [
+						"latitude"
+					],
+					"toType": "double",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "longitude_id",
+					"fromPath": [
+						"longitude"
+					],
+					"toType": "double",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "bolt_count",
+					"fromPath": [
+						"boltcount"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "module_count",
+					"fromPath": [
+						"modulecount"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "mms_count",
+					"fromPath": [
+						"mmscount"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "torque",
+					"fromPath": [
+						"torque"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "log_timestamp",
+					"fromPath": [
+						"timestamp"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1777539325040": {
+			"nodeId": "node-1777539325040",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1776935984329"
+			],
+			"name": "Transaction Target table",
+			"generatedNodeName": "TransactionTargettable_node1777539325040",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "tatadata_db",
+			"table": "qa_ods_final",
+			"format": "iceberg",
+			"partitionKeys": [],
+			"additionalOptions": {},
+			"calculatedType": "",
+			"updateCatalogOptions": "partitions",
+			"runtimeParameters": [],
+			"codeGenVersion": 2,
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "LOG"
+			}
+		},
+		"node-1776935984329": {
+			"nodeId": "node-1776935984329",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1777437161932"
+			],
+			"name": "SQL Query--Transaction",
+			"generatedNodeName": "SQLQueryTransaction_node1776935984329",
+			"classification": "Transform",
+			"type": "SqlCode",
+			"sqlAliases": [
+				{
+					"from": "node-1777437161932",
+					"alias": "myDataSource"
+				}
+			],
+			"outputSchemas": [
+				[
+					{
+						"key": "log_st",
+						"fullPath": [
+							"log_st"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latitude_id",
+						"fullPath": [
+							"latitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "longitude_id",
+						"fullPath": [
+							"longitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bolt_count",
+						"fullPath": [
+							"bolt_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "module_count",
+						"fullPath": [
+							"module_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "mms_count",
+						"fullPath": [
+							"mms_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "torque",
+						"fullPath": [
+							"torque"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "log_timestamp",
+						"fullPath": [
+							"log_timestamp"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "valid_start",
+						"fullPath": [
+							"valid_start"
+						],
+						"type": "date",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "valid_end",
+						"fullPath": [
+							"valid_end"
+						],
+						"type": "date",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ins_dt",
+						"fullPath": [
+							"ins_dt"
+						],
+						"type": "timestamp",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "upd_dt",
+						"fullPath": [
+							"upd_dt"
+						],
+						"type": "timestamp",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latest_flag",
+						"fullPath": [
+							"latest_flag"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"sqlQuery": "/* 1. New records from Staging */\nWITH new_active AS (\n    SELECT \n        log_st, latitude_id, longitude_id, bolt_count, module_count, \n        mms_count, torque, log_timestamp,\n        CURRENT_DATE AS valid_start,\n        CAST(NULL AS DATE) AS valid_end,\n        CAST(CURRENT_TIMESTAMP AS TIMESTAMP) AS ins_dt,\n        CAST(CURRENT_TIMESTAMP AS TIMESTAMP) AS upd_dt,\n        1 AS latest_flag\n    FROM myDataSource\n),\n\n/* 2. Create the '0' History record using Staging for the JOIN */\ndeactivated_old AS (\n    SELECT \n        t.log_st, t.latitude_id, t.longitude_id, t.bolt_count, t.module_count,\n        t.mms_count, t.torque, t.log_timestamp, \n        t.valid_start,\n        CURRENT_DATE-1 AS valid_end, \n        t.ins_dt,\n        CAST(CURRENT_TIMESTAMP AS TIMESTAMP) AS upd_dt,\n        0 AS latest_flag\n    FROM glue_catalog.tatadata_db.qa_ods_final t\n    INNER JOIN myDataSource n -- Joining against staging data to find matches\n        ON t.latitude_id = n.latitude_id \n        AND t.longitude_id = n.longitude_id\n    WHERE t.latest_flag = 1\n)\n\n/* Final Selection: Exactly 13 columns */\nSELECT * FROM new_active\nUNION ALL\nSELECT * FROM deactivated_old",
+			"codeGenVersion": 2
+		},
+		"node-1777539435795": {
+			"nodeId": "node-1777539435795",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1777438295264"
+			],
+			"name": "Staging Max count",
+			"generatedNodeName": "StagingMaxcount_node1777539435795",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "tatadata_db",
+			"table": "qa_ods_staging",
+			"format": "iceberg",
+			"partitionKeys": [],
+			"additionalOptions": {},
+			"calculatedType": "",
+			"updateCatalogOptions": "partitions",
+			"runtimeParameters": [],
+			"codeGenVersion": 2,
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "LOG"
+			}
+		},
+		"node-1776836352324": {
+			"nodeId": "node-1776836352324",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Amazon S3",
+			"generatedNodeName": "AmazonS3_node1776836352324",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://tatapowertorque2026/raw/Complete data/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://tatapowertorque2026/raw/Complete data/INTELLI (3).CSV",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latitude",
+						"fullPath": [
+							"latitude"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "longitude",
+						"fullPath": [
+							"longitude"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "boltcount",
+						"fullPath": [
+							"boltcount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "modulecount",
+						"fullPath": [
+							"modulecount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "mmscount",
+						"fullPath": [
+							"mmscount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "torque",
+						"fullPath": [
+							"torque"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "timestamp",
+						"fullPath": [
+							"timestamp"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2,
+			"inferSchemaChanged": true
+		},
+		"node-1777437846381": {
+			"nodeId": "node-1777437846381",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1777437161932"
+			],
+			"name": "Change Schema--Site",
+			"generatedNodeName": "ChangeSchemaSite_node1777437846381",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "gps_id",
+					"fromPath": [
+						"gps_id"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "latitude_id",
+					"fromPath": [
+						"latitude_id"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "longitude_id",
+					"fromPath": [
+						"longitude_id"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "site_geo_location",
+					"fromPath": [
+						"site_geo_location"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1777539364429": {
+			"nodeId": "node-1777539364429",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1777437846381"
+			],
+			"name": "Site Geo Target table",
+			"generatedNodeName": "SiteGeoTargettable_node1777539364429",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "tatadata_db",
+			"table": "geo_site_details_tb1",
+			"format": "iceberg",
+			"partitionKeys": [],
+			"additionalOptions": {},
+			"calculatedType": "",
+			"updateCatalogOptions": "partitions",
+			"runtimeParameters": [],
+			"codeGenVersion": 2,
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "LOG"
+			}
+		},
+		"node-1777437161932": {
+			"nodeId": "node-1777437161932",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1776925724967"
+			],
+			"name": "SQL Query---Staging",
+			"generatedNodeName": "SQLQueryStaging_node1777437161932",
+			"classification": "Transform",
+			"type": "SqlCode",
+			"sqlAliases": [
+				{
+					"from": "node-1776925724967",
+					"alias": "myDataSource"
+				}
+			],
+			"outputSchemas": [
+				[
+					{
+						"key": "log_st",
+						"fullPath": [
+							"log_st"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latitude_id",
+						"fullPath": [
+							"latitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "longitude_id",
+						"fullPath": [
+							"longitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bolt_count",
+						"fullPath": [
+							"bolt_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "module_count",
+						"fullPath": [
+							"module_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "mms_count",
+						"fullPath": [
+							"mms_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "torque",
+						"fullPath": [
+							"torque"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "log_timestamp",
+						"fullPath": [
+							"log_timestamp"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "gps_id",
+						"fullPath": [
+							"gps_id"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "site_geo_location",
+						"fullPath": [
+							"site_geo_location"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "valid_start",
+						"fullPath": [
+							"valid_start"
+						],
+						"type": "date",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "valid_end",
+						"fullPath": [
+							"valid_end"
+						],
+						"type": "date",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ins_dt",
+						"fullPath": [
+							"ins_dt"
+						],
+						"type": "timestamp",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "upd_dt",
+						"fullPath": [
+							"upd_dt"
+						],
+						"type": "timestamp",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latest_flag",
+						"fullPath": [
+							"latest_flag"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"sqlQuery": "/* 1. Generate unique GPS IDs and Site Names from the filtered stream */\nWITH base_data AS (\n    SELECT \n        *,\n        /* Assign a unique number to every unique Lat/Long pair */\n        DENSE_RANK() OVER (ORDER BY latitude_id, longitude_id) AS generated_gps_id,\n        /* Create the geo-location string */\n        CONCAT('site_', CAST(latitude_id AS STRING), '_', CAST(longitude_id AS STRING)) AS generated_site_location\n    FROM myDataSource -- Refers to the output of the Filter Node\n),\n\n/* 2. Deduplicate to isolate the maximum progress record per location */\nranked_data AS (\n    SELECT \n        *,\n        ROW_NUMBER() OVER (\n            PARTITION BY latitude_id, longitude_id \n            ORDER BY bolt_count DESC, log_timestamp DESC\n        ) AS rn\n    FROM base_data\n)\n\n/* 3. Final Output with Audit Tracking Columns */\nSELECT \n    log_st, latitude_id, longitude_id, bolt_count, module_count, \n    mms_count, torque, log_timestamp, \n    generated_gps_id AS gps_id, \n    generated_site_location AS site_geo_location,\n    CURRENT_DATE AS valid_start,\n    CAST(NULL AS DATE) AS valid_end,\n    CAST(CURRENT_TIMESTAMP AS TIMESTAMP) AS ins_dt,\n    CAST(CURRENT_TIMESTAMP AS TIMESTAMP) AS upd_dt,\n    1 AS latest_flag\nFROM ranked_data\nWHERE rn = 1\n",
+			"codeGenVersion": 2
+		},
+		"node-1777438295264": {
+			"nodeId": "node-1777438295264",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1777437161932"
+			],
+			"name": "Change Schema_Max",
+			"generatedNodeName": "ChangeSchema_Max_node1777438295264",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "log_st",
+					"fromPath": [
+						"log_st"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "latitude_id",
+					"fromPath": [
+						"latitude_id"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "longitude_id",
+					"fromPath": [
+						"longitude_id"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "bolt_count",
+					"fromPath": [
+						"bolt_count"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "module_count",
+					"fromPath": [
+						"module_count"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "mms_count",
+					"fromPath": [
+						"mms_count"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "torque",
+					"fromPath": [
+						"torque"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "log_timestamp",
+					"fromPath": [
+						"log_timestamp"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "valid_start",
+					"fromPath": [
+						"valid_start"
+					],
+					"toType": "date",
+					"fromType": "date",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "valid_end",
+					"fromPath": [
+						"valid_end"
+					],
+					"toType": "date",
+					"fromType": "date",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "ins_dt",
+					"fromPath": [
+						"ins_dt"
+					],
+					"toType": "timestamp",
+					"fromType": "timestamp",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "upd_dt",
+					"fromPath": [
+						"upd_dt"
+					],
+					"toType": "timestamp",
+					"fromType": "timestamp",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "latest_flag",
+					"fromPath": [
+						"latest_flag"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1776925724967": {
+			"nodeId": "node-1776925724967",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1776836389046"
+			],
+			"name": "SQLQuery-Filter",
+			"generatedNodeName": "SQLQueryFilter_node1776925724967",
+			"classification": "Transform",
+			"type": "SqlCode",
+			"sqlAliases": [
+				{
+					"from": "node-1776836389046",
+					"alias": "myDataSource"
+				}
+			],
+			"outputSchemas": [
+				[
+					{
+						"key": "log_st",
+						"fullPath": [
+							"log_st"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "latitude_id",
+						"fullPath": [
+							"latitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "longitude_id",
+						"fullPath": [
+							"longitude_id"
+						],
+						"type": "double",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bolt_count",
+						"fullPath": [
+							"bolt_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "module_count",
+						"fullPath": [
+							"module_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "mms_count",
+						"fullPath": [
+							"mms_count"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "torque",
+						"fullPath": [
+							"torque"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "log_timestamp",
+						"fullPath": [
+							"log_timestamp"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"sqlQuery": "SELECT \n    log_st,\n    latitude_id,\n    longitude_id,\n    bolt_count,\n    module_count,\n    mms_count,\n    torque,\n    log_timestamp\nFROM myDataSource\nWHERE log_st = 'RUN'\n",
+			"codeGenVersion": 2
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}
